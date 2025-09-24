@@ -25,27 +25,27 @@ This project serves as a hands-on learning experience to explore:
 
 1. **Clone the repository:**
 
-    ```bash
-    git clone <repository-url>
-    cd embeddings
-    ```
+   ```bash
+   git clone https://github.com/LoganXav/modular-rag-pipeline.git
+   cd modular-rag-pipeline/embeddings
+   ```
 
 2. **Create and activate a virtual environment:**
 
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
 
 3. **Install dependencies:**
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ### Running the Pipeline
 
-To start the embeddings pipeline, execute the `main.py` script:
+To start both the embeddings and querying pipelines, execute the `main.py` script:
 
 ```bash
 python main.py
@@ -56,6 +56,18 @@ This will initiate the process defined within the `EmbeddingsPipeline` class, wh
 1. Loading or processing raw data.
 2. Generating embeddings for the text chunks.
 3. Storing these embeddings in the configured vector database.
+
+After the embeddings pipeline is complete, the querying pipeline will start, allowing you to enter queries and retrieve relevant information. Type 'exit' to quit the querying pipeline.
+
+## Querying the Embeddings
+
+Once the `main.py` script is running and the querying pipeline has started, you can enter your search queries at the prompt:
+
+```
+Enter your query> your search query here
+```
+
+The system will return a list of search results, including a similarity score, the page numbers where the content was found, and a snippet of the relevant content.
 
 ## Project Structure
 
@@ -72,4 +84,3 @@ As a learning project, contributions are welcome! Feel free to fork the reposito
 ## License
 
 This project is open-source and available under the MIT License.
-
