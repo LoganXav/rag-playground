@@ -1,0 +1,7 @@
+{
+  "model": "all-MiniLM-L6-v2",
+  "dim": 384,
+  "vectors": 633,
+  "created_at": "6c2a9546644040bd805434d0c8a741ab",
+  "index_type": "IndexFlatIP"
+}
