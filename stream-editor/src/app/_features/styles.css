@@ -1,0 +1,160 @@
+.tiptap :first-child {
+  margin-top: 0;
+}
+
+.tiptap .tiptap-mathematics-render {
+  padding: 0 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.tiptap .tiptap-mathematics-render--editable {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.tiptap .tiptap-mathematics-render--editable:hover {
+  background: rgb(32, 32, 32);
+}
+
+.tiptap .tiptap-mathematics-render[data-type="inline-math"] {
+  display: inline-block;
+}
+
+.tiptap .tiptap-mathematics-render[data-type="block-math"] {
+  display: block;
+  margin: 1rem 0;
+  padding: 1rem;
+  text-align: center;
+}
+
+.tiptap .tiptap-mathematics-render.inline-math-error,
+.tiptap .tiptap-mathematics-render.block-math-error {
+  background: var(--red-light);
+  color: var(--red);
+  border: 1px solid var(--red-dark);
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.tiptap h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1rem 0 0.5rem;
+}
+
+.tiptap h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0.75rem 0 0.5rem;
+}
+
+.tiptap h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0.5rem 0 0.5rem;
+}
+
+.tiptap p {
+  font-size: 1rem;
+  margin: 0 0 0.75rem;
+}
+
+.tiptap ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 0 0 0.75rem;
+}
+
+.tiptap ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 0 0 0.75rem;
+}
+
+.tiptap li {
+  margin: 0.25rem 0;
+}
+
+.tiptap hr {
+  margin: 2rem 0;
+  border-color: rgb(48, 48, 48);
+}
+
+.tiptap {
+  min-height: 90vh;
+}
+
+.tiptap:focus {
+  outline: none;
+}
+
+.tiptap [contenteditable="true"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #aaa;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ai-diff-widget {
+  z-index: 20;
+}
+.ai-diff-old {
+  border-left: 3px solid rgba(248, 81, 73, 0.7);
+}
+.ai-diff-new {
+  border-left: 3px solid rgba(46, 160, 67, 0.9);
+}
+
+.ProseMirror {
+  padding-inline: 4rem;
+}
+
+.ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+
+.ProseMirror [data-id] {
+  border: 1px solid #0d0d0d;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  position: relative;
+  margin-top: 1.5rem;
+}
+
+.ProseMirror [data-id]::before {
+  content: attr(data-id);
+  background-color: #0d0d0d;
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.drag-handle {
+  align-items: center;
+  background: transparent;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: grab;
+  display: flex;
+  gap: 10rem;
+  height: 1.5rem;
+  justify-content: center;
+  width: 1.5rem;
+}
+
+.drag-handle svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
