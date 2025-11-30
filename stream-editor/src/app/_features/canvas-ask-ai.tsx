@@ -12,7 +12,7 @@ interface Props {
   sendMessage: ({ message, context }: { message: string; context: string }) => Promise<void>;
 }
 
-export const SelectionAskAI = ({ editor, sendMessage }: Props) => {
+export const CanvasAskAI = ({ editor, sendMessage }: Props) => {
   const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
   const [prompt, setPrompt] = useState("");
   const [open, setOpen] = useState(false);

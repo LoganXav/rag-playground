@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
+import { VectorDatabase } from "@/database";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { systemInstruction } from "@/app/constants/prompts";
+import { embedContent, runCosineSimilaritySearch } from "@/lib/process-content";
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,11 +16,33 @@ export async function POST(req: NextRequest) {
     const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
     const chat = model.startChat({ history: [] });
 
+    const topK = 5;
+
+    // Embed user prompt
+    const embeddedUserMessage = await embedContent(message);
+
+    const vectorResults = VectorDatabase.read();
+
+    // Run a similarity search with the user's embedding against the chnks in the db to retrieve relevent cunks
+    const results = vectorResults.map((entry) => {
+      const score = runCosineSimilaritySearch(Array.from(embeddedUserMessage), Array.from(entry.embedding));
+
+      return { ...entry, score };
+    });
+
+    results.sort((a, b) => b.score - a.score);
+
+    // Obtain the relevant chunks as additional context to the llm
+    const context = results.slice(0, topK).map((result) => result.chunk);
+
     const prompt = `
     ${systemInstruction}
     
     User request:
     ${message}
+
+    Document context:
+    ${context}
     
   `;
 

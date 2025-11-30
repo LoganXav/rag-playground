@@ -18,7 +18,7 @@ export function useChat() {
   const PREVIEW_START = "<<<PREVIEW_START>>>";
   const PREVIEW_END = "<<<PREVIEW_END>>>";
 
-  async function sendMessage({ message, context }: { message: string; context: string }) {
+  async function sendMessage({ message, context }: { message: string; context?: string }) {
     if (!message.trim()) return;
 
     const userMsg: ChatMessage = {

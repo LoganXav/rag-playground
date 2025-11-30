@@ -14,6 +14,8 @@ export default function ChatRendererConversation({ messages, setMessages }: { me
     return null;
   }
 
+  console.log(messages);
+
   return (
     <div className="flex flex-col gap-6 pb-64">
       {messages.map((msg) => (
@@ -24,12 +26,13 @@ export default function ChatRendererConversation({ messages, setMessages }: { me
                 remarkPlugins={[remarkMath]}
                 rehypePlugins={[rehypeKatex]}
                 components={{
-                  p: ({ children }) => <p className="mb-0 last:mb-0">{children}</p>,
-                  ul: ({ children }) => <ul className="list-disc list-inside mb-0">{children}</ul>,
-                  ol: ({ children }) => <ol className="list-decimal list-inside mb-0">{children}</ol>,
+                  p: ({ children }) => <p className="m-0 leading-tight">{children}</p>,
+                  ul: ({ children }) => <ul className="m-0 list-disc list-inside">{children}</ul>,
+                  ol: ({ children }) => <ol className="m-0 list-decimal list-inside">{children}</ol>,
+                  li: ({ children }) => <li className="m-0 leading-tight">{children}</li>,
                 }}
               >
-                {msg.content}
+                {msg.content.replace(/\n/g, "  \n")}
               </ReactMarkdown>
             </div>
 

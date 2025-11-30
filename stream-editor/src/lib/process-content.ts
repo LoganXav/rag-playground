@@ -58,3 +58,17 @@ export const embedContent = async (content: string): Promise<DataArray> => {
 
   return result.data;
 };
+
+export const runCosineSimilaritySearch = (a: number[], b: number[]) => {
+  let dot = 0;
+  let aNorm = 0;
+  let bNorm = 0;
+
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    aNorm += a[i] ** 2;
+    bNorm += b[i] ** 2;
+  }
+
+  return dot / (Math.sqrt(aNorm) * Math.sqrt(bNorm));
+};

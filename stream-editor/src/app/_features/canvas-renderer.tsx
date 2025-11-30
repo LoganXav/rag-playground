@@ -7,7 +7,7 @@ import { editorAtom } from "@/store/editor";
 import { useChat } from "@/hooks/use-chat";
 import { useEditorContent } from "@/providers/editor-content-provider";
 import { CanvasRendererControls } from "./canvas-renderer-controls";
-import { SelectionAskAI } from "./selection-ask-ai";
+// import { CanvasAskAI } from "./canvas-ask-ai";
 
 import { Editor, EditorContent, JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -151,7 +151,7 @@ export const CanvasRenderer = () => {
       </div>
 
       {/* Ask AI popover */}
-      {/* <SelectionAskAI sendMessage={sendMessage} editor={editor} /> */}
+      {/* <CanvasAskAI sendMessage={sendMessage} editor={editor} /> */}
     </>
   );
 };
