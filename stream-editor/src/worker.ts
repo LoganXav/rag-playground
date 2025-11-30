@@ -30,7 +30,7 @@ function startEmbeddingsWorker() {
     } catch (error) {
       console.error(error);
     }
-  }, 3000);
+  }, 2 * 1000 * 60);
 }
 
 startEmbeddingsWorker();
