@@ -4,6 +4,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { systemInstruction } from "@/app/constants/prompts";
 import { embedContent, runCosineSimilaritySearch } from "@/lib/process-content";
 
+// Keep chat history in memory
+const pastMessages: { role: string; parts: { text: string }[] }[] = [];
+
 export async function POST(req: NextRequest) {
   try {
     const { message } = await req.json();
@@ -14,7 +17,7 @@ export async function POST(req: NextRequest) {
 
     const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
     const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
-    const chat = model.startChat({ history: [] });
+    const chat = model.startChat({ history: pastMessages });
 
     const topK = 5;
 
@@ -56,6 +59,9 @@ export async function POST(req: NextRequest) {
 
       assembled += txt;
     }
+
+    pastMessages.push({ role: "user", parts: [{ text: message }] });
+    pastMessages.push({ role: "model", parts: [{ text: assembled }] });
 
     const encoder = new TextEncoder();
     const stream = new ReadableStream({

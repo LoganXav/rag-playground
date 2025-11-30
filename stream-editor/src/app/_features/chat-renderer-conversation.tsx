@@ -14,8 +14,6 @@ export default function ChatRendererConversation({ messages, setMessages }: { me
     return null;
   }
 
-  console.log(messages);
-
   return (
     <div className="flex flex-col gap-6 pb-64">
       {messages.map((msg) => (
