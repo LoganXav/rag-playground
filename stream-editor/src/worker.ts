@@ -4,33 +4,35 @@ import { embedContent, generateHash, splitMarkdownContentIntoChunks } from "@/li
 // Store previous hashes in memory
 let previousHashes: string[] = [];
 
-function startEmbeddingsWorker() {
-  setInterval(async () => {
-    try {
-      const editorContent = Database.read("editor-content");
+async function startEmbeddingsWorker() {
+  try {
+    const editorContent = Database.read("editor-content");
 
-      // Chunk the editor content
-      const chunks = splitMarkdownContentIntoChunks(editorContent);
+    // Chunk the editor content
+    const chunks = splitMarkdownContentIntoChunks(editorContent);
 
-      // Generate an hash for each chunk
-      const currentHashes = chunks.map((chunk) => generateHash(chunk));
+    // Generate an hash for each chunk
+    const currentHashes = chunks.map((chunk) => generateHash(chunk));
 
-      for (let i = 0; i < chunks.length; i++) {
-        // Only embed chunks that changed
-        if (previousHashes[i] !== currentHashes[i]) {
-          const embedding = await embedContent(chunks[i]);
+    for (let i = 0; i < chunks.length; i++) {
+      // Only embed chunks that changed
+      if (previousHashes[i] !== currentHashes[i]) {
+        const embedding = await embedContent(chunks[i]);
 
-          // Store it in the vector store
-          VectorDatabase.upsert(i, embedding, chunks[i]);
-        }
+        // Store it in the vector store
+        VectorDatabase.upsert(i, embedding, chunks[i]);
       }
-
-      // Update the latest hashes
-      previousHashes = currentHashes;
-    } catch (error) {
-      console.error(error);
     }
-  }, 2 * 1000 * 60);
+
+    // Update the latest hashes
+    previousHashes = currentHashes;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-startEmbeddingsWorker();
+startEmbeddingsWorker().catch(console.error);
+
+setInterval(() => {
+  startEmbeddingsWorker().catch(console.error);
+}, 2 * 1000 * 60);
