@@ -4,7 +4,10 @@
 
 node_modules/
 
+database.json
+vector-database.json
 
 __pycache__/
 .venv/
 venv/
+stream-editor/src/database/database.json
