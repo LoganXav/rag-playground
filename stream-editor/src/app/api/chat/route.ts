@@ -38,22 +38,31 @@ export async function POST(req: NextRequest) {
 
     const result = await chat.sendMessageStream(prompt);
 
-    let assembled = "";
-
-    for await (const chunk of result.stream) {
-      const txt = chunk.text();
-      if (!txt) continue;
-
-      assembled += txt;
-    }
-
-    pastMessages.push({ role: "user", parts: [{ text: message }] });
-    pastMessages.push({ role: "model", parts: [{ text: assembled }] });
+    // Accumulate the text here for saving into history.
+    let fullAssistantReply = "";
 
     const encoder = new TextEncoder();
+
     const stream = new ReadableStream({
       async start(controller) {
-        controller.enqueue(encoder.encode(assembled));
+        for await (const chunk of result.stream) {
+          const text = chunk.text();
+          if (!text) continue;
+
+          fullAssistantReply += text;
+          controller.enqueue(encoder.encode(text));
+        }
+
+        pastMessages.push({
+          role: "user",
+          parts: [{ text: message }],
+        });
+
+        pastMessages.push({
+          role: "model",
+          parts: [{ text: fullAssistantReply }],
+        });
+
         controller.close();
       },
     });
