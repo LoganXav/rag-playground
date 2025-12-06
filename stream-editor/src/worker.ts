@@ -1,5 +1,9 @@
 import { Database, VectorDatabase } from "@/database";
-import { embedContent, generateHash, splitMarkdownContentIntoChunks } from "@/lib/process-content";
+import {
+  embedContent,
+  generateHash,
+  splitMarkdownContentIntoChunks,
+} from "@/lib/process-content";
 
 // Store previous hashes in memory
 let previousHashes: string[] = [];
@@ -7,6 +11,10 @@ let previousHashes: string[] = [];
 async function startEmbeddingsWorker() {
   try {
     const editorContent = Database.read("editor-content");
+
+    if (!editorContent) {
+      throw new Error("Database not initialized yet");
+    }
 
     // Chunk the editor content
     const chunks = splitMarkdownContentIntoChunks(editorContent);
@@ -26,13 +34,16 @@ async function startEmbeddingsWorker() {
 
     // Update the latest hashes
     previousHashes = currentHashes;
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error(error.message);
   }
 }
 
 startEmbeddingsWorker().catch(console.error);
 
-setInterval(() => {
-  startEmbeddingsWorker().catch(console.error);
-}, 2 * 1000 * 60);
+setInterval(
+  () => {
+    startEmbeddingsWorker().catch(console.error);
+  },
+  2 * 1000 * 60,
+);

@@ -1,8 +1,7 @@
 import { NextRequest } from "next/server";
-import { VectorDatabase } from "@/database";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { systemInstruction } from "@/app/constants/prompts";
-import { embedContent, runCosineSimilaritySearch } from "@/lib/process-content";
+import { embedContent, getRelevantChunksContext } from "@/lib/process-content";
+import { getAiModel } from "@/lib/ai-model";
 
 // Keep chat history in memory
 const pastMessages: { role: string; parts: { text: string }[] }[] = [];
@@ -12,31 +11,16 @@ export async function POST(req: NextRequest) {
     const { message } = await req.json();
 
     if (!message || typeof message !== "string") {
-      return new Response(JSON.stringify({ error: "Message is required" }), { status: 400 });
+      return new Response(JSON.stringify({ error: "Message is required" }), {
+        status: 400,
+      });
     }
-
-    const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-    const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
-    const chat = model.startChat({ history: pastMessages });
-
-    const topK = 5;
 
     // Embed user prompt
     const embeddedUserMessage = await embedContent(message);
 
-    const vectorResults = VectorDatabase.read();
-
-    // Run a similarity search with the user's embedding against the chnks in the db to retrieve relevent cunks
-    const results = vectorResults.map((entry) => {
-      const score = runCosineSimilaritySearch(Array.from(embeddedUserMessage), Array.from(entry.embedding));
-
-      return { ...entry, score };
-    });
-
-    results.sort((a, b) => b.score - a.score);
-
-    // Obtain the relevant chunks as additional context to the llm
-    const context = results.slice(0, topK).map((result) => result.chunk);
+    // Obtain chunks of the document relevant to the user prompt
+    const context = getRelevantChunksContext(embeddedUserMessage);
 
     const prompt = `
     ${systemInstruction}
@@ -48,6 +32,9 @@ export async function POST(req: NextRequest) {
     ${context}
     
   `;
+
+    const model = getAiModel();
+    const chat = model.startChat({ history: pastMessages });
 
     const result = await chat.sendMessageStream(prompt);
 

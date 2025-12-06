@@ -32,7 +32,9 @@ export const CanvasRenderer = () => {
   const [editor, setEditor] = useState<Editor | null>(null);
   const [isEditable, setIsEditable] = useState(true);
 
-  const [initialContent, setInitialContent] = useState<null | JSONContent>(null);
+  const [initialContent, setInitialContent] = useState<null | JSONContent>(
+    null,
+  );
   const [saveStatus, setSaveStatus] = useState("Saved");
   const [charsCount, setCharsCount] = useState();
 
@@ -43,12 +45,18 @@ export const CanvasRenderer = () => {
     setCharsCount(editor.storage.characterCount.words());
 
     window.localStorage.setItem("vesper-html-content", editor.getHTML());
-    window.localStorage.setItem("vesper-structured-content", JSON.stringify(json));
-    window.localStorage.setItem("vesper-markdown", editor.storage.markdown.getMarkdown());
+    window.localStorage.setItem(
+      "vesper-structured-content",
+      JSON.stringify(json),
+    );
+    window.localStorage.setItem(
+      "vesper-markdown",
+      editor.storage.markdown.getMarkdown(),
+    );
 
     syncMarkdownContent(editor.storage.markdown.getMarkdown());
     setSaveStatus("Saved");
-  }, 500);
+  }, 1500);
 
   // Set initial content from local storage on page load.
   useEffect(() => {
@@ -72,17 +80,33 @@ export const CanvasRenderer = () => {
         Math.configure({
           blockOptions: {
             onClick: (node, pos) => {
-              const newCalc = prompt("Enter new block math expression:", node.attrs.latex);
+              const newCalc = prompt(
+                "Enter new block math expression:",
+                node.attrs.latex,
+              );
               if (newCalc) {
-                instance.chain().setNodeSelection(pos).updateBlockMath({ latex: newCalc }).focus().run();
+                instance
+                  .chain()
+                  .setNodeSelection(pos)
+                  .updateBlockMath({ latex: newCalc })
+                  .focus()
+                  .run();
               }
             },
           },
           inlineOptions: {
             onClick: (node, pos) => {
-              const newCalc = prompt("Enter new inline math expression:", node.attrs.latex);
+              const newCalc = prompt(
+                "Enter new inline math expression:",
+                node.attrs.latex,
+              );
               if (newCalc) {
-                instance.chain().setNodeSelection(pos).updateInlineMath({ latex: newCalc }).focus().run();
+                instance
+                  .chain()
+                  .setNodeSelection(pos)
+                  .updateInlineMath({ latex: newCalc })
+                  .focus()
+                  .run();
               }
             },
           },
@@ -132,13 +156,27 @@ export const CanvasRenderer = () => {
       <div className="p-0 lg:p-6 lg:px-10 relative">
         {/* Floating editor controls */}
         <div className="fixed z-30 right-3 top-1/2 -translate-y-1/2">
-          <CanvasRendererControls editor={editor} isEditable={isEditable} setIsEditable={setIsEditable} />
+          <CanvasRendererControls
+            editor={editor}
+            isEditable={isEditable}
+            setIsEditable={setIsEditable}
+          />
         </div>
 
         {/* Counts */}
         <div className="flex justify-end sticky right-5 top-[1px] z-10 mb-5 gap-2">
-          <div className="rounded-xl bg-neutral-700 px-2 py-1 text-xs text-white">{saveStatus}</div>
-          <div className={charsCount ? "rounded-xl px-2 py-1 text-xs text-white bg-neutral-700" : "hidden"}>{charsCount} Words</div>
+          <div className="rounded-xl bg-neutral-700 px-2 py-1 text-xs text-white">
+            {saveStatus}
+          </div>
+          <div
+            className={
+              charsCount
+                ? "rounded-xl px-2 py-1 text-xs text-white bg-neutral-700"
+                : "hidden"
+            }
+          >
+            {charsCount} Words
+          </div>
         </div>
 
         {/* Main editor area */}

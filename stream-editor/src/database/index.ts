@@ -21,8 +21,6 @@ export class Database {
 
   static read(key: string): string {
     if (!fs.existsSync(DB_FILE)) {
-      console.error("Database not initialized yet.");
-
       return "";
     }
 
