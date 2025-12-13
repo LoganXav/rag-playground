@@ -2,14 +2,17 @@ import { DataArray } from "@xenova/transformers";
 
 export type ChatMessage = {
   id: string;
+  status: "used" | "dismissed" | "default";
   role: "user" | "assistant";
   content: string;
-  meta?: {
-    type?: "patch" | "text";
-    patch?: string;
-    explanation?: string;
-    applied?: boolean;
-  };
+  preview?: { data: string } | null;
+  edits?: ChatMessageEdit[];
+};
+
+export type ChatMessageEdit = {
+  id: string;
+  content: string;
+  action: "insert" | "delete" | "insert_after" | "update" | "insert_before";
 };
 
 export type VectorDatabaseEntry = {

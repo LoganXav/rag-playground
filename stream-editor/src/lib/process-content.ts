@@ -85,7 +85,7 @@ export const getRelevantChunksContext = (embeddedUserMessage: DataArray) => {
   const topK = 5;
   const vectorResults = VectorDatabase.read();
 
-  // Run a similarity search with the user's embedding against the chnks in the db to retrieve relevent cunks
+  // similarity search with the user's embedding against the chnks in the db to retrieve relevent cunks
   const results = vectorResults.map((entry) => {
     const score = runCosineSimilaritySearch(
       Array.from(embeddedUserMessage),
@@ -97,7 +97,6 @@ export const getRelevantChunksContext = (embeddedUserMessage: DataArray) => {
 
   results.sort((a, b) => b.score - a.score);
 
-  // Obtain the relevant chunks as additional context to the llm
   const context = results.slice(0, topK).map((result) => result.chunk);
 
   return context;

@@ -37,17 +37,23 @@ export function parseMarkdownToChunks(markdown: string): Chunk[] {
   return chunks;
 }
 
-export const buildStructuredContext = (relevantChunks: string[], allChunks: { id: string; type: string; content: string }[]) => {
+export const buildStructuredContext = (
+  allChunks: { id: string; type: string; content: string }[],
+) => {
   const contextLines: string[] = [];
 
-  relevantChunks.forEach((chunkText) => {
-    // Try to match multiple nodes within this chunk
-    allChunks.forEach((node) => {
-      if (chunkText.includes(node.content)) {
-        contextLines.push(`CHUNK ${node.id} (${node.type}):\n"${node.content}"\n`);
-      }
-    });
+  // Try to match multiple nodes within this chunk
+  allChunks.forEach((node) => {
+    contextLines.push(`CHUNK ${node.id} (${node.type}):\n"${node.content}"\n`);
   });
 
   return contextLines.join("\n");
 };
+
+export function detectChunkType(block: string): Chunk["type"] {
+  if (/^#{1,6}\s+/.test(block)) return "heading";
+  if (/^\$\$/.test(block) || /^\$[^$]/.test(block)) return "math";
+  if (/^```/.test(block)) return "code";
+  if (/^[-*+]\s+/.test(block) || /^\d+\./.test(block)) return "list";
+  return "paragraph";
+}

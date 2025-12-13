@@ -101,16 +101,6 @@
   pointer-events: none;
 }
 
-.ai-diff-widget {
-  z-index: 20;
-}
-.ai-diff-old {
-  border-left: 3px solid rgba(248, 81, 73, 0.7);
-}
-.ai-diff-new {
-  border-left: 3px solid rgba(46, 160, 67, 0.9);
-}
-
 .ProseMirror {
   padding-inline: 4rem;
 }

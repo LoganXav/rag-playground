@@ -1,23 +1,20 @@
 "use client";
 
 import katex from "katex";
-import { markdownToHtml } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { markdownToHtml, cn } from "@/lib/utils";
 import React, { useEffect, useRef } from "react";
 import { ForwardIcon, XIcon } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 interface ChatRendererConversationPreviewProps {
   data?: string | null;
+  status: "used" | "dismissed" | "default";
   onApply?: () => void;
   onDismiss?: () => void;
 }
 
-export default function ChatRendererConversationPreview({
-  data,
-  onApply,
-  onDismiss,
-}: ChatRendererConversationPreviewProps) {
+export default function ChatRendererConversationPreview({ data, status, onApply, onDismiss }: ChatRendererConversationPreviewProps) {
   const previewRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -31,9 +28,7 @@ export default function ChatRendererConversationPreview({
     previewRef.current.innerHTML = html;
 
     // render math
-    const nodes = previewRef.current.querySelectorAll<HTMLElement>(
-      '[data-type="inline-math"], [data-type="block-math"]',
-    );
+    const nodes = previewRef.current.querySelectorAll<HTMLElement>('[data-type="inline-math"], [data-type="block-math"]');
     nodes.forEach((node) => {
       const latex = node.getAttribute("data-latex") || "";
       const displayMode = node.getAttribute("data-type") === "block-math";
@@ -53,11 +48,9 @@ export default function ChatRendererConversationPreview({
   return (
     <div className="space-y-3">
       <Card className="bg-neutral-900/60 border border-neutral-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-        <CardHeader className="p-3 text-xs text-neutral-400 border-b border-neutral-800 uppercase tracking-wider">
-          Preview
-        </CardHeader>
+        <CardHeader className="p-3 text-xs text-neutral-400 border-b border-neutral-800 uppercase tracking-wider">Preview</CardHeader>
 
-        <CardContent className="p-4 max-h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-transparent">
+        <CardContent className={cn("p-4 max-h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-transparent pointer-events-none", status === "used" && "bg-green-900/10", status === "dismissed" && "bg-red-900/10")}>
           <div
             ref={previewRef}
             className="
@@ -77,21 +70,12 @@ export default function ChatRendererConversationPreview({
       </Card>
 
       <div className="flex justify-end gap-2 items-center">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onDismiss}
-          className="h-6 px-2 text-[11px] rounded-sm text-neutral-300 hover:bg-neutral-800 hover:text-white"
-        >
+        <Button variant="ghost" disabled={status === "used" || status === "dismissed"} size="sm" onClick={onDismiss} className="h-6 px-2 text-[11px] rounded-sm text-neutral-300 hover:bg-neutral-800 hover:text-white">
           <XIcon size={12} className="mr-0.5" />
           Dismiss
         </Button>
 
-        <Button
-          size="sm"
-          onClick={apply}
-          className="h-6 px-2 text-[11px] rounded-sm bg-neutral-300 hover:bg-neutral-400"
-        >
+        <Button size="sm" onClick={apply} disabled={status === "used" || status === "dismissed"} className="h-6 px-2 text-[11px] rounded-sm bg-neutral-300 hover:bg-neutral-400">
           <ForwardIcon size={12} className="mr-0.5" />
           Apply
         </Button>
