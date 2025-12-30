@@ -4,16 +4,29 @@ import { Editor } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import React, { useEffect, useRef, useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { convertSelectionToMarkdownWithContext } from "@/lib/editor-minimal-context";
 
 interface Props {
   editor: Editor;
-  sendMessage: ({ message, context }: { message: string; context: string }) => Promise<void>;
+  sendMessage: ({
+    message,
+    context,
+  }: {
+    message: string;
+    context: string;
+  }) => Promise<void>;
 }
 
 export const CanvasAskAI = ({ editor, sendMessage }: Props) => {
-  const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
+  const [position, setPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
   const [prompt, setPrompt] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -43,7 +56,8 @@ export const CanvasAskAI = ({ editor, sendMessage }: Props) => {
       let editorEl: HTMLElement | null = null;
       const elOption = editor?.options.element;
       if (elOption instanceof HTMLElement) editorEl = elOption;
-      else if (elOption && typeof elOption === "object" && "mount" in elOption) editorEl = (elOption as { mount: HTMLElement }).mount;
+      else if (elOption && typeof elOption === "object" && "mount" in elOption)
+        editorEl = (elOption as { mount: HTMLElement }).mount;
 
       // If selection is outside editor, ignore (and clear only if popover closed)
       if (!editorEl || !editorEl.contains(range.commonAncestorContainer)) {
@@ -85,11 +99,12 @@ export const CanvasAskAI = ({ editor, sendMessage }: Props) => {
     e.stopPropagation();
 
     // Convert current selection to markdown (uses editor.state.selection if not passed)
-    const { selectionMarkdown, contextMarkdown, selection } = convertSelectionToMarkdownWithContext(editor, {
-      radius: 2,
-      maxNodes: 12,
-      expandIfCollapsed: true,
-    });
+    const { selectionMarkdown, contextMarkdown, selection } =
+      convertSelectionToMarkdownWithContext(editor, {
+        radius: 2,
+        maxNodes: 12,
+        expandIfCollapsed: true,
+      });
 
     console.log("selection:", selection);
     console.log("=== selectionMarkdown ===\n", selectionMarkdown);
