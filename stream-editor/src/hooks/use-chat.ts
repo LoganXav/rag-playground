@@ -7,7 +7,13 @@ export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isSending, setIsSending] = useState(false);
 
-  async function sendMessage({ message, context }: { message: string; context?: string }) {
+  async function sendMessage({
+    message,
+    context,
+  }: {
+    message: string;
+    context?: string;
+  }) {
     if (!message.trim()) return;
 
     const userMsg: ChatMessage = {
@@ -74,7 +80,9 @@ export function useChat() {
               ...m,
               content: data.summary || "",
               isStreaming: false,
-              preview: mergedContent ? { data: mergedContent } : undefined,
+              preview: {
+                data: mergedContent || "This action will modify the document.",
+              },
               edits: data.edits,
             };
           } else {
@@ -87,7 +95,7 @@ export function useChat() {
               edits: undefined,
             };
           }
-        })
+        }),
       );
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -101,8 +109,8 @@ export function useChat() {
                 content: `Error: ${err.message || String(err)}`,
                 isStreaming: false,
               }
-            : m
-        )
+            : m,
+        ),
       );
     } finally {
       setIsSending(false);
